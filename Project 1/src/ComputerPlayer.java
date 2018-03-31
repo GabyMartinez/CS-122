@@ -26,7 +26,7 @@ public class ComputerPlayer{
 	 	//----- YOUR CODE GOES HERE:
 	 	// ADD A SETTTER METHOD FOR THE INSTANCE VARIABLE THAT 
 	    // STORES THE GAME SYMBOL ASSIGNED TO THE COMPUTER PLAYER
-	   public void setComputerSymbol(String letter) {
+	   public void setComputerSymbol(String letter) throws StringNotAcceptedException {
 		   board.setComputerSymbol(letter);
 	   }
 	   public String getComputerSymbol() {

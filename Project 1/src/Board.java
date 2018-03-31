@@ -55,10 +55,10 @@ public class Board {
 	public String getComputerSymbol() {
 		return computer;
 	}
-	public void setComputerSymbol(String letter) {
+	public void setComputerSymbol(String letter) throws StringNotAcceptedException {
 		if(letter.equalsIgnoreCase("x") || letter.equalsIgnoreCase("o") )
 			computer = letter.toUpperCase();
-		//else throw StringNotAcceptedException
+		else throw new StringNotAcceptedException("Enter X or O");
 	}
 	
 	//getter and setter for user symbol
@@ -163,7 +163,7 @@ public class Board {
 	}
 	
 	
-	public void checkBoard() {
+	public void checkBoard() throws IllegalMoveException {
 		System.out.print("\nMoves:");
 		
 		//iterates over array
@@ -207,8 +207,8 @@ public class Board {
 						        	break;
 			        		}
 			        		break;
-			        default://throws IllegalMoveException
-			        		break;
+			        default:
+			        	throw new IllegalMoveException("Sorry. That move's been made already. Try another number.");
 					}
 				}
 			}
@@ -245,11 +245,15 @@ public class Board {
 	
 	//going to change to a private setter method
 	//input will be one number 1-9
-	private void setMove(int row, int column, String a) {
-		if(a.equalsIgnoreCase(user))
-			board[row][column] = user;
+	private void setMove(int row, int column, String a) throws IllegalMoveException {
+		if(isValid(row, column)) {
+			if(a.equalsIgnoreCase(user))
+				board[row][column] = user;
+			else
+				board[row][column] = computer;
+		}
 		else
-			board[row][column] = computer;
+			throw new IllegalMoveException("Sorry. That move's been made already. Try another number.");
 	}
 	
 	//switch statement to interpret spot input

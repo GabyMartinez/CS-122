@@ -1,5 +1,7 @@
+import java.io.IOException;
 import java.util.Scanner;
-public class Game {
+public class Game implements RulesEngine
+{
 	private ComputerPlayer computerPlayer;
 	private String computer, user;
 	private Board board;
@@ -7,13 +9,34 @@ public class Game {
 
 	public Game(ComputerPlayer computerPlayer) {
 		this.computerPlayer = computerPlayer;
-		computer = computerPlayer.getComputerSymbol();
+	//	computer = computerPlayer.getComputerSymbol();
 		board = computerPlayer.getBoard();
+		user = board.getUserSymbol();
 	}
 	private void setUser() throws StringNotAcceptedException {
-		System.out.println("Do you want to be X or O?");
-		user = scan.nextLine();
+		user = "x";
 		board.setUserSymbol(user);
+		
+		computer = "o";
+		board.setComputerSymbol(computer);
+	/*/	System.out.println("Do you want to be X or O?");
+	//	user = scan.nextLine();
+		if(user.equalsIgnoreCase("x")) {
+			board.setUserSymbol(user);
+			user = board.getUserSymbol();
+			
+			board.setComputerSymbol("o");
+			computer = board.getComputerSymbol();
+		}
+		else if(user.equalsIgnoreCase("o")) {
+			board.setUserSymbol(user);
+			user = board.getUserSymbol();
+			
+			board.setComputerSymbol("x");
+			computer = board.getComputerSymbol();
+		}
+		else throw new StringNotAcceptedException("Enter X or O");
+	*/
 	}
 	
 	private void promptUser() {
@@ -63,21 +86,171 @@ public class Game {
 		}
 		return num;
 	}
+
+	private boolean checkDraw() {
+		int [] moves = movesMade(board.getBoard(), user);
+		GameState state = GameState.DRAW;
+		int [][] draw = state.getGameState();
+		int count = 0;
+		
+		for(int i = 0; draw[0].length>i;i++) {
+			if(draw[0][i]==moves[i])
+				count++;
+		}
+		if(count==9)
+			return true;
+		else
+			return false;
+	}
+	
+	private boolean checkPlay() {
+		if(checkDraw())
+			return false;
+		else if(checkWinX())
+			return false;
+		else if(checkWinO())
+			return false;
+		else 
+			return true;
+	}
+	
+	private boolean checkWinO() {
+		GameState state = GameState.O_WON;
+		int[][] xWin = state.getGameState();
+		int[] moves = movesMade(board.getBoard(), (computer.equalsIgnoreCase("o")?computer:"x"));
+		
+		for(int row = 0; row < 8; row++) {
+			int count = 0;
+			for(int col=0;col < 3;col++) {
+				for(int move:moves) {
+					if(xWin[row][col]==move)
+						count++;
+				}
+			}
+			if(count==3) {
+			//	System.out.println("Computer Wins");
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	private boolean checkWinX() {
+		GameState state = GameState.X_WON;
+		int[][] xWin = state.getGameState();
+		int[] moves = movesMade(board.getBoard(), (user.equalsIgnoreCase("x")?user:"o"));
+		
+		for(int row = 0; row < 8; row++) {
+			int count = 0;
+			for(int col=0;col < 3;col++) {
+				for(int move:moves) {
+					if(xWin[row][col]==move)
+						count++;
+				}
+			}
+			if(count==3)
+		//		System.out.print("You Win!");
+				return true;
+		}
+		return false;
+	}
+	
+	
+	private int[] movesMade(String[][] board, String letter) {
+		int[]moves = new int[9];
+		for(int row = 0; row<3; row++) {
+			for(int column = 0; column<3;column++) {
+				if(board[row][column].equalsIgnoreCase(letter)) {
+					switch (row) {
+			        case 0:	switch(column) {
+						        case 0: 
+						        	moves[0]=1;
+						        //	System.out.print(1 );
+						        	break;
+						        case 1: 
+						        	moves[1]=2;
+						        //	System.out.print( 2 );
+						        	break;
+						        case 2: 
+						        	moves[2]=3;
+						       // 	System.out.print( 3 );
+						        	break;
+			        		}
+			                break;
+			        case 1: switch(column) {
+						        case 0: 
+						        	moves[3]=4;
+						        //	System.out.print( 4 );
+						        	break;
+						        case 1: 
+						        	moves[4]=5;
+						        //	System.out.print( 5 );
+						        	break;
+						        case 2: 
+						        	moves[5]=6;
+						        //	System.out.print( 6 );
+						        	break;
+			        		}
+			     			break;
+			        case 2: switch(column) {
+						        case 0: 
+						        	moves[6]=7;
+						       // 	System.out.print( 7 );
+						        	break;
+						        case 1: 
+						        	moves[7]=8;
+						        //	System.out.print( 8 );
+						        	break;
+						        case 2: 
+						        	moves[8]=9;
+						        //	System.out.print( 9 );
+						        	break;
+			        		}
+			        		break;
+			        default://throws IllegalMoveException
+			        		break;
+					}
+				}
+			}
+		}
+	//	System.out.println(" are moves made");
+	
+		
+		return moves;
+	}
+	
 	
 	public void play() {
 		//try-catch for illegal moves and inputs
 		try {
-		setUser();
+			setUser();
 		
-		//while enum == play
+			while(checkPlay()) {
+			
+				promptUser();
+				computerPlayer.setMove();
+				
+				board.printBoard();
+				//movesMade(board.getBoard(), user);
+				
+			}
+			if(checkDraw()) {
+				System.out.print("It's a Draw!");
+			}
+			else if(checkWinX())
+				System.out.print("You Win!");
+			else if(checkWinO()) {
+				System.out.println("The Computer Wins! Better Luck next time!");
+				System.out.println("Want to try again? y/n");
+				String input = scan.nextLine();
+				
+				if(input.equalsIgnoreCase("y"))
+					
+					play();
+			}
+			else if(checkWinO()||checkWinX())
+				System.out.print("Wow! It's a Tie!");
 		
-		if(user.equalsIgnoreCase("X")) {
-			promptUser();
-		}
-		else
-			computerPlayer.setMove();
-		
-		board.printBoard();
 		}
 		catch(IllegalMoveException ex) {
 			System.out.println(ex.getLocalizedMessage());
@@ -85,10 +258,11 @@ public class Game {
 		}
 		catch (StringNotAcceptedException e) {
 			System.out.println(e.getLocalizedMessage());
+			
 			play();
 		}
 		
-		//once out of the loop 
+
 	}
 
 }

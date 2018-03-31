@@ -1,13 +1,13 @@
 //import java.util.Scanner;
 public class Driver {
-	public static void main(String[]args) throws StringNotAcceptedException {
+	public static void main(String[]args) throws StringNotAcceptedException, IllegalMoveException {
 	//	Scanner scan = new Scanner(System.in);
 		
 	//	String letter = scan.next();
 		Board board= new Board("x");
 		ComputerPlayer computer =  new ComputerPlayer(board);
 		Game game = new Game(computer);
-	/*	
+/*		
 		board.printExampleBoard();
 		System.out.println("\n");
 		board.printBoard();
