@@ -298,7 +298,7 @@ public class Board {
         		setMove(2,2,a);
         		break;	
         default://default throws IllegalMoveException
-        		throw new IllegalMoveException("Illegal Move: Enter a number between 1 and 9 (inclusive)");
+        		throw new IllegalMoveException("Illegal Move: "+move+"\nEnter a number between 1 and 9 (inclusive)");
 		}
 	}
 	

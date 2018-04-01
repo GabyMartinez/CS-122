@@ -57,11 +57,12 @@ public class ComputerPlayer{
  */	   
 	   
  	   private int getMove() {
- 		   for (int move : moves) {
- 			   if(board.isValid(move))
- 				   return move;
- 		   }
- 		   return 0;
+ 	//	 for (int move : moves) {
+ 		 for(int i=0; i<moves.length; i++) {
+ 			  if(board.isValid(moves[i])) 
+ 				 return moves[i];
+ 		 }
+ 		 return 0;
  	   }
  	   
  	   
@@ -69,9 +70,15 @@ public class ComputerPlayer{
  		   //only call if getMove()!= 0
 		   if(getMove()!= 0) {
 			  this.board.playMove(getMove(),computer);
+		//	  System.out.println("Computer played: "+getMove() +"\n");
 		   }
 		   //else do nothing or random move
 	   }
+ 	   
+ 	   public void printCompMove() {
+ 		//   if(getMove() !=0)
+ 			   System.out.println("Computer played: "+getMove() +"\n");
+ 	   }
 	   
 
 }

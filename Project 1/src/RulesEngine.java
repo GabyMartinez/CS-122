@@ -1,19 +1,10 @@
 
 public interface RulesEngine {
-	private boolean checkDraw() {
-		//compare to enum type DRAW
-		return false;
-	}
-	private boolean checkWin() {
-		//compare to enum type X_WIN
-		return false;
-	}
-	private boolean checkWinO() {
-		//compare to enum type O_WIN
-		return false;
-	}
+	public boolean checkDraw();
+	public boolean checkWinX();
+	public boolean checkWinO();
 	
-	private int[] movesMade(String[][] board, String letter) {
+	public default int[] movesMade(String[][] board, String letter) {
 		int[]moves = new int[9];
 		for(int row = 0; row<3; row++) {
 			for(int column = 0; column<3;column++) {
@@ -62,8 +53,6 @@ public interface RulesEngine {
 			}
 		}
 //		System.out.println("are moves made");
-	
-		
 		return moves;
 	}
 	
