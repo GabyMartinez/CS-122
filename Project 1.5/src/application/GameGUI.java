@@ -2,10 +2,12 @@ package application;
 
 import javafx.application.Application;
 import javafx.event.ActionEvent;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
@@ -15,28 +17,67 @@ import javafx.stage.Stage;
 
 public class GameGUI extends Application {
 	private ComputerPlayer computerPlayer;
-	private String computer = "O", user = "X";
-	private Board board;
-
+	private String computer = "o", user = "x", username;
+	
+	private Board board = new Board(user);	
+	private String [][] boardA = board.getBoard();
+	private Game game;
 	
 	private Rectangle one, two, three, four, five, six, seven, eight, nine;
 	private Button startGame, newGame;
+	private Pane boardPane;
+	private BorderPane root, sidePane, intro;
+	private Label move1 = new Label(""), 
+					move2 = new Label(""), 
+					move3 = new Label(""), 
+					move4 = new Label(""), 
+					move5 = new Label(""), 
+					move6 = new Label(""), 
+					move7 = new Label(""), 
+					move8 = new Label(""), 
+					move9 = new Label(""), 
+					instructions = new Label("Click a box to make a move");
+	
 	@Override
 	public void start(Stage primaryStage) {
-		BorderPane root = new BorderPane();
-		Pane boardPane = new Pane();
-	//	Pane sidePane = new Pane();
+		
+		
+		root = new BorderPane();
+		sidePane = new BorderPane();
+		intro = new BorderPane();
+		boardPane = new Pane();
+		GridPane startPane = new GridPane();
 		
 	//instructions and new game buttons
-//		Label instructions = new Label("Click the box to make a move");
-//		
-	/*	startGame = new Button("Start Game");
+	//Label instructions = new Label("Click the box to make a move");
+		Label addUserName = new Label("Enter Username\t");
+		TextField userName = new TextField();
+//	/*	
+	// TODO add buttons later for light or dark themes
+		startGame = new Button("Start Game");
 		newGame = new Button("New Game");
-		
-		startGame.setOnAction(this::start);
-		newGame.setOnAction(this::start);
 //*/		
-//		sidePane.getChildren().addAll(newGame);
+		startGame.setOnAction(this::start);
+		startGame.setStyle("-fx-font-size: 14pt;");
+		
+		newGame.setOnAction(this::newGame);
+//		newGame.setStyle(value);
+		
+		instructions.setStyle("-fx-font-size: 12pt;");
+		intro.setCenter(instructions);		
+		
+	//	add all nodes to startPane/start page	
+	//	startPane.getChildren().addAll(instructions,startGame);
+	//	startPane.add(instructions, 1, 1);
+		startPane.add(addUserName, 1, 2);
+		startPane.add(userName, 2, 2);
+		startPane.add(startGame, 2, 4);
+		startPane.setAlignment(Pos.CENTER);
+		addUserName.setStyle("-fx-font-size: 14pt;");
+		
+	//add newGame button to sidePane to later add to root
+		sidePane.setCenter(newGame);
+		//sidePane.setStyle("-fx-background-color: black;");
 		
 		//boxes for each choice
 		one = new Rectangle(10,10,200,200);
@@ -48,7 +89,24 @@ public class GameGUI extends Application {
 		seven = new Rectangle(10,430,200,200);
 		eight = new Rectangle(220,430,200,200);
 		nine = new Rectangle(430,430,200,200);
+	
+	//set layout for x and o's	
+		move1.setText(""+boardA[0][0]);
+		move1.setLayoutX(55);
+		move1.setLayoutY(0);
+		move1.setStyle("-fx-font-size: 120pt;");
 		
+		move2.setText(""+boardA[0][1]);
+		move2.setLayoutX(270);
+		move2.setLayoutY(0);
+		move2.setStyle("-fx-font-size: 120pt;");
+		
+		move3.setText(""+boardA[0][2]);
+		move3.setLayoutX(480);
+		move3.setLayoutY(0);
+		move3.setStyle("-fx-font-size: 120pt;");
+		
+	//set fill	
 		one.setFill(Color.LIGHTBLUE); // "-fx-fill: #ADD8E6; -fx-stroke: blue;");
 		two.setFill(Color.LIGHTBLUE);
 		three.setFill(Color.LIGHTBLUE);
@@ -63,16 +121,17 @@ public class GameGUI extends Application {
 		one.setOpacity(.5);
 		one.setOnMouseEntered(this::hoverIn);
 		one.setOnMouseExited(this::hoverOut);
-	//	one.setOnMouseClicked(this::click);
+			one.setOnMouseClicked(this::click);
 		
 		two.setOpacity(.5);
 		two.setOnMouseEntered(this::hoverIn);
 		two.setOnMouseExited(this::hoverOut);
-	//	two.setOnMouseClicked(this::click);
+			two.setOnMouseClicked(this::click);
 		
 		three.setOpacity(.5);
 		three.setOnMouseEntered(this::hoverIn);
 		three.setOnMouseExited(this::hoverOut);
+			three.setOnMouseClicked(this::click);
 		
 		four.setOpacity(.5);
 		four.setOnMouseEntered(this::hoverIn);
@@ -98,15 +157,23 @@ public class GameGUI extends Application {
 		nine.setOnMouseEntered(this::hoverIn);
 		nine.setOnMouseExited(this::hoverOut);
 		
-		boardPane.setStyle("-fx-fill: #ADD8E6;");
-		boardPane.getChildren().addAll(one, two, three, four, five, six, seven, eight, nine);
-		root.setCenter(boardPane);
-	//	root.setRight(sidePane);
+//		boardPane.setStyle("-fx-background-color: black;");
+//		boardPane.getChildren().addAll(one, two, three, four, five, six, seven, eight, nine);
+		root.setCenter(startPane);
+		root.setPadding(new Insets(3, 0, 10, 0));
+//		root.setStyle("-fx-background-color: black;");
+	
 		
-		Scene GamePlay = new Scene(root,640,640);
-		GamePlay.setFill(Color.BLACK);
+		Scene GamePlay = new Scene(root,640,700);
+		GamePlay.setFill(Color.BLACK);		
 		primaryStage.setScene(GamePlay);
 		primaryStage.show();
+	
+	/*	Scene startScreen = new Scene(sidePane, 300,200);
+		Stage startStage = new Stage();
+		startStage.setScene(startScreen);
+		startStage.show();
+	*/
 	}
 	
 	public void hoverIn(MouseEvent e) {
@@ -142,74 +209,56 @@ public class GameGUI extends Application {
 //	
 	public void hoverOut(MouseEvent e) {
 		//returns to normal/dimmed
-		if(e.getSource()==one) {
+		if(e.getSource()==one && board.isValid(1)) {
 			one.setOpacity(.5);
 		}
-		else if(e.getSource() == two) {
+		else if(e.getSource() == two && board.isValid(2)) {
 			two.setOpacity(.5);
 		}
-		else if(e.getSource() == three) {
+		else if(e.getSource() == three && board.isValid(3)) {
 			three.setOpacity(.5);
 		}
-		else if(e.getSource() == four) {
+		else if(e.getSource() == four && board.isValid(4)) {
 			four.setOpacity(.5);
 		}
-		else if(e.getSource() == five) {
+		else if(e.getSource() == five && board.isValid(5)) {
 			five.setOpacity(.5);
 		}
-		else if(e.getSource() == six) {
+		else if(e.getSource() == six && board.isValid(6)) {
 			six.setOpacity(.5);
 		}
-		else if(e.getSource() == seven) {
+		else if(e.getSource() == seven && board.isValid(7)) {
 			seven.setOpacity(.5);
 		}
-		else if(e.getSource() == eight) {
+		else if(e.getSource() == eight && board.isValid(8)) {
 			eight.setOpacity(.5);
 		}
-		else if(e.getSource() == nine) {
+		else if(e.getSource() == nine && board.isValid(9)) {
 			nine.setOpacity(.5);
 		}
 	}
 //	
-/*	public void click(MouseEvent e) {
-		boolean played = false;
+	
+  	public void click(MouseEvent e) {
+  		String [][] boardA = board.getBoard();
 		try {
-			if(e.getSource()==one && ) {
+			
+			if(e.getSource()==one && board.isValid(1)) { //&& Game.checkPlay()
 				board.playMove(1, user);
-				played = true;
-			} 
-			else if(e.getSource() == two && !played) {
+				move1.setText(""+boardA[0][0]);
+				boardPane.getChildren().add(move1);
+			}
+			else if(e.getSource() == two && board.isValid(2)) {
 				board.playMove(2, user);
-				played = true;
+				move2.setText(""+boardA[0][1]);
+				boardPane.getChildren().add(move2);
 			}
-			else if(e.getSource() == three && !played) {
+			else if(e.getSource() == three && board.isValid(3)) {
 				board.playMove(3, user);
-				played = true;
+				move3.setText(""+boardA[0][2]);
+				boardPane.getChildren().add(move3);
 			}
-			else if(e.getSource() == four && !played) {
-				board.playMove(4, user);
-				played = true;
-			}
-			else if(e.getSource() == five && !played) {
-				board.playMove(5, user);
-				played = true;
-			}
-			else if(e.getSource() == six && !played) {
-				board.playMove(6, user);
-				played = true;
-			}
-			else if(e.getSource() == seven && !played) {
-				board.playMove(7, user);
-				played = true;
-			}
-			else if(e.getSource() == eight && !played) {
-				board.playMove(8, user);
-				played = true;
-			}
-			else if(e.getSource() == nine && !played) {
-				board.playMove(9, user);
-				played = true;
-			}
+			
 		}
 		catch (IllegalMoveException e1) {
 			// TODO Auto-generated catch block
@@ -217,15 +266,37 @@ public class GameGUI extends Application {
 		}
 
 	}
-	*/
-	public void start(ActionEvent e) {
-		try {
-			board = new Board("x");
+	/*	
+  	private void setCompPlay() {
+  		move1.setText(""+boardA[0][2]);
+  		move2.setText(""+boardA[0][2]);
+  		move3.setText(""+boardA[0][2]);
+  		move4.setText(""+boardA[0][2]);
+  		move5.setText(""+boardA[0][2]);
+  		move6.setText(""+boardA[0][2]);
+  		move7.setText(""+boardA[0][2]);
+  		move8.setText(""+boardA[0][2]);
+  		move9.setText(""+boardA[0][2]);
+  		boardPane.getChildren().addAll(move1, move2, move3, move4, move5, move6, move7, move8, move9);
+  	}
+//	*/
+	
+  	public void start(ActionEvent e) {
+		
+		//	board = new Board(user);
 			computerPlayer =  new ComputerPlayer(board);
-		} 
-		catch (StringNotAcceptedException e1) {
-			e1.printStackTrace();
-		}
+			game = new Game(computerPlayer);
+			
+			boardPane.getChildren().addAll(one, two, three, four, five, six, seven, eight, nine);
+			root.setCenter(boardPane);
+			root.setBottom(sidePane);
+			root.setTop(intro);
+			startGame.setDisable(true);
+			
+	}
+	public void newGame(ActionEvent e) {
+		board = new Board(user);
+		computerPlayer =  new ComputerPlayer(board);
 	}
 	
 	public static void main(String[] args) {
