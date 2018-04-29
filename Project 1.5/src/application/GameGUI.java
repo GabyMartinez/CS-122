@@ -17,7 +17,8 @@ import javafx.stage.Stage;
 
 public class GameGUI extends Application {
 	private ComputerPlayer computerPlayer;
-	private String computer = "o", user = "x", username;
+	private TextField userName = new TextField();
+	private String computer = "o", user = "x", username = userName.getText();
 	
 	private Board board = new Board(user);	
 	private String [][] boardA = board.getBoard();
@@ -51,7 +52,7 @@ public class GameGUI extends Application {
 	//instructions and new game buttons
 	//Label instructions = new Label("Click the box to make a move");
 		Label addUserName = new Label("Enter Username\t");
-		TextField userName = new TextField();
+		
 //	/*	
 	// TODO add buttons later for light or dark themes
 		startGame = new Button("Start Game");
@@ -95,17 +96,27 @@ public class GameGUI extends Application {
 		move1.setLayoutX(55);
 		move1.setLayoutY(0);
 		move1.setStyle("-fx-font-size: 120pt;");
-		
+			move1.setOnMouseEntered(this::hoverIn);
+			move1.setOnMouseExited(this::hoverOut);
+			move1.setOnMouseClicked(this::click);
+
 		move2.setText(""+boardA[0][1]);
 		move2.setLayoutX(270);
 		move2.setLayoutY(0);
 		move2.setStyle("-fx-font-size: 120pt;");
-		
+			move2.setOnMouseEntered(this::hoverIn);
+			move2.setOnMouseExited(this::hoverOut);
+			move2.setOnMouseClicked(this::click);
+
 		move3.setText(""+boardA[0][2]);
 		move3.setLayoutX(480);
 		move3.setLayoutY(0);
 		move3.setStyle("-fx-font-size: 120pt;");
-		
+			move3.setOnMouseEntered(this::hoverIn);
+			move3.setOnMouseExited(this::hoverOut);
+			move3.setOnMouseClicked(this::click);
+
+
 	//set fill	
 		one.setFill(Color.LIGHTBLUE); // "-fx-fill: #ADD8E6; -fx-stroke: blue;");
 		two.setFill(Color.LIGHTBLUE);
@@ -167,6 +178,7 @@ public class GameGUI extends Application {
 		Scene GamePlay = new Scene(root,640,700);
 		GamePlay.setFill(Color.BLACK);		
 		primaryStage.setScene(GamePlay);
+		primaryStage.setResizable(false);
 		primaryStage.show();
 	
 	/*	Scene startScreen = new Scene(sidePane, 300,200);
@@ -247,6 +259,8 @@ public class GameGUI extends Application {
 				board.playMove(1, user);
 				move1.setText(""+boardA[0][0]);
 				boardPane.getChildren().add(move1);
+				computerPlayer.setMove();
+				setCompPlay();
 			}
 			else if(e.getSource() == two && board.isValid(2)) {
 				board.playMove(2, user);
@@ -261,12 +275,13 @@ public class GameGUI extends Application {
 			
 		}
 		catch (IllegalMoveException e1) {
+		//	instructions.setText(value);
 			// TODO Auto-generated catch block
-			e1.printStackTrace();
+		//	e1.printStackTrace();
 		}
 
 	}
-	/*	
+//	/*	
   	private void setCompPlay() {
   		move1.setText(""+boardA[0][2]);
   		move2.setText(""+boardA[0][2]);
@@ -282,16 +297,20 @@ public class GameGUI extends Application {
 //	*/
 	
   	public void start(ActionEvent e) {
+  		//	username ;
 		
 		//	board = new Board(user);
 			computerPlayer =  new ComputerPlayer(board);
 			game = new Game(computerPlayer);
 			
 			boardPane.getChildren().addAll(one, two, three, four, five, six, seven, eight, nine);
+	  	//	boardPane.getChildren().addAll(move1, move2, move3, move4, move5, move6, move7, move8, move9);
+
 			root.setCenter(boardPane);
 			root.setBottom(sidePane);
 			root.setTop(intro);
 			startGame.setDisable(true);
+
 			
 	}
 	public void newGame(ActionEvent e) {
