@@ -3,7 +3,7 @@ import java.util.Scanner;
 public class Game implements RulesEngine
 {
 	private ComputerPlayer computerPlayer;
-	private String computer, user;
+	private String computer = "o", user = "x";
 	private Board board;
 	Scanner scan = new Scanner(System.in);
 

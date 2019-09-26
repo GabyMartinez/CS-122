@@ -16,17 +16,17 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
 public class GameGUI extends Application {
-	private ComputerPlayer computerPlayer;
-	private TextField userName = new TextField();
-	private String computer = "o", user = "x", username = userName.getText();
-	
-	private Board board = new Board(user);	
+	private String computer = "o", user = "x";
+	private Board board = new Board(user);
 	private String [][] boardA = board.getBoard();
-	private Game game;
+	private ComputerPlayer computerPlayer = new ComputerPlayer(board);
+	private Game game = new Game(computerPlayer);
+	private boolean isNewGame = false;
 	
+	private TextField userName = new TextField();
 	private Rectangle one, two, three, four, five, six, seven, eight, nine;
 	private Button startGame, newGame;
-	private Pane boardPane;
+	private Pane boardPane, closingPane;
 	private BorderPane root, sidePane, intro;
 	private Label move1 = new Label(""), 
 					move2 = new Label(""), 
@@ -37,12 +37,13 @@ public class GameGUI extends Application {
 					move7 = new Label(""), 
 					move8 = new Label(""), 
 					move9 = new Label(""), 
-					instructions = new Label("Click a box to make a move");
+					instructions = new Label("Click a box to make a move"),
+					winnings;
 	
 	@Override
 	public void start(Stage primaryStage) {
 		
-		
+		closingPane = new Pane();
 		root = new BorderPane();
 		sidePane = new BorderPane();
 		intro = new BorderPane();
@@ -78,7 +79,17 @@ public class GameGUI extends Application {
 		
 	//add newGame button to sidePane to later add to root
 		sidePane.setCenter(newGame);
+		//TODO dark theme
 		//sidePane.setStyle("-fx-background-color: black;");
+		
+	//TODO Closing Pane/end game card
+		winnings = new Label("");
+		winnings.setLayoutX(150);
+		winnings.setLayoutY(150);
+		winnings.setStyle("-fx-font-size: 50pt;");
+		closingPane.setStyle("-fx-background-color: #ADD8E6");
+	//	closingPane.setOpacity(.7);
+	//	closingPane.getChildren().add(winnings);
 		
 		//boxes for each choice
 		one = new Rectangle(10,10,200,200);
@@ -95,30 +106,55 @@ public class GameGUI extends Application {
 		move1.setText(""+boardA[0][0]);
 		move1.setLayoutX(55);
 		move1.setLayoutY(0);
-		move1.setStyle("-fx-font-size: 120pt;");
+		move1.setStyle("-fx-font-size: 0pt;");
+	/*		move1.setOnMouseClicked((e)-> {one.setOpacity(1);});
 			move1.setOnMouseEntered(this::hoverIn);
 			move1.setOnMouseExited(this::hoverOut);
 			move1.setOnMouseClicked(this::click);
-
+	*/
 		move2.setText(""+boardA[0][1]);
 		move2.setLayoutX(270);
 		move2.setLayoutY(0);
-		move2.setStyle("-fx-font-size: 120pt;");
-			move2.setOnMouseEntered(this::hoverIn);
-			move2.setOnMouseExited(this::hoverOut);
-			move2.setOnMouseClicked(this::click);
+		move2.setStyle("-fx-font-size: 0pt;");
+		
 
 		move3.setText(""+boardA[0][2]);
 		move3.setLayoutX(480);
 		move3.setLayoutY(0);
-		move3.setStyle("-fx-font-size: 120pt;");
-			move3.setOnMouseEntered(this::hoverIn);
-			move3.setOnMouseExited(this::hoverOut);
-			move3.setOnMouseClicked(this::click);
+		move3.setStyle("-fx-font-size: 0pt;");
+		
+		move4.setText(""+boardA[1][0]);
+		move4.setLayoutX(55);
+		move4.setLayoutY(205);
+		move4.setStyle("-fx-font-size: 0pt;");
+		
+		move5.setText(""+boardA[1][1]);
+		move5.setLayoutX(270);
+		move5.setLayoutY(205);
+		move5.setStyle("-fx-font-size: 0pt;");
+		
+		move6.setText(""+boardA[1][2]);
+		move6.setLayoutX(480);
+		move6.setLayoutY(205);
+		move6.setStyle("-fx-font-size: 0pt;");
+		
+		move7.setText(""+boardA[2][0]);
+		move7.setLayoutX(55);
+		move7.setLayoutY(415);
+		move7.setStyle("-fx-font-size: 0pt;");
+		
+		move8.setText(""+boardA[2][1]);
+		move8.setLayoutX(270);
+		move8.setLayoutY(415);
+		move8.setStyle("-fx-font-size: 0pt;");
+		
+		move9.setText(""+boardA[2][2]);
+		move9.setLayoutX(480);
+		move9.setLayoutY(415);
+		move9.setStyle("-fx-font-size: 0pt;");
 
-
-	//set fill	
-		one.setFill(Color.LIGHTBLUE); // "-fx-fill: #ADD8E6; -fx-stroke: blue;");
+	//set fill for rectangles	
+		one.setFill(Color.LIGHTBLUE); // "-fx-fill: #ADD8E6; -fx-stroke: blue; rgba(173,216,230,.5);");
 		two.setFill(Color.LIGHTBLUE);
 		three.setFill(Color.LIGHTBLUE);
 		four.setFill(Color.LIGHTBLUE);
@@ -129,6 +165,13 @@ public class GameGUI extends Application {
 		nine.setFill(Color.LIGHTBLUE);
 		
 	//	set actions for clicks and hovers for each box
+	/*	one = new Pane();
+		one.setStyle("-fx-background-color: #ADD8E6");
+	    one.setScaleX(10);
+	    one.setScaleY(10);
+	    one.setMaxSize(200, 200);
+	    one.getChildren().add(move1);
+	*/
 		one.setOpacity(.5);
 		one.setOnMouseEntered(this::hoverIn);
 		one.setOnMouseExited(this::hoverOut);
@@ -147,26 +190,32 @@ public class GameGUI extends Application {
 		four.setOpacity(.5);
 		four.setOnMouseEntered(this::hoverIn);
 		four.setOnMouseExited(this::hoverOut);
+			four.setOnMouseClicked(this::click);
 		
 		five.setOpacity(.5);
 		five.setOnMouseEntered(this::hoverIn);
 		five.setOnMouseExited(this::hoverOut);
+			five.setOnMouseClicked(this::click);
 		
 		six.setOpacity(.5);
 		six.setOnMouseEntered(this::hoverIn);
 		six.setOnMouseExited(this::hoverOut);
+			six.setOnMouseClicked(this::click);
 		
 		seven.setOpacity(.5);
 		seven.setOnMouseEntered(this::hoverIn);
 		seven.setOnMouseExited(this::hoverOut);
+			seven.setOnMouseClicked(this::click);
 		
 		eight.setOpacity(.5);
 		eight.setOnMouseEntered(this::hoverIn);
 		eight.setOnMouseExited(this::hoverOut);
+			eight.setOnMouseClicked(this::click);
 		
 		nine.setOpacity(.5);
 		nine.setOnMouseEntered(this::hoverIn);
 		nine.setOnMouseExited(this::hoverOut);
+			nine.setOnMouseClicked(this::click);
 		
 //		boardPane.setStyle("-fx-background-color: black;");
 //		boardPane.getChildren().addAll(one, two, three, four, five, six, seven, eight, nine);
@@ -249,62 +298,234 @@ public class GameGUI extends Application {
 			nine.setOpacity(.5);
 		}
 	}
-//	
-	
+
   	public void click(MouseEvent e) {
-  		String [][] boardA = board.getBoard();
+  		String [][] boardA;
+  		if(isNewGame) {
+  			board = new Board(user);
+			boardA = board.getBoard(); 
+			computerPlayer = new ComputerPlayer(board);
+			game = new Game(computerPlayer);
+  		}
+  		boardA = board.getBoard();
+  		
+  		if(isNewGame)
+			root.requestLayout();
 		try {
+			//do {
+				if(e.getSource()==one && board.isValid(1) && game.checkPlay()) { //&& Game.checkPlay()
+					board.playMove(1, user);
+					move1.setText(""+boardA[0][0]);
+					move1.setStyle("-fx-font-size: 120pt;");
+					if(game.checkPlay()) {
+						computerPlayer.setMove();
+						setCompPlay();
+					}
+					
+					if(isNewGame)
+						root.requestLayout();
+				}
+				else if(e.getSource() == two && board.isValid(2) && game.checkPlay()) {
+					board.playMove(2, user);
+					move2.setText(""+boardA[0][1]);
+					move2.setStyle("-fx-font-size: 120pt;");
+					if(game.checkPlay()) {
+						computerPlayer.setMove();
+						setCompPlay();
+					}
+				}
+				else if(e.getSource() == three && board.isValid(3) && game.checkPlay()) {
+					board.playMove(3, user);
+					move3.setText(""+boardA[0][2]);
+					move3.setStyle("-fx-font-size: 120pt;");
+					if(game.checkPlay()) {
+						computerPlayer.setMove();
+						setCompPlay();
+					}
+				}
+				else if(e.getSource() == four && board.isValid(4) && game.checkPlay()) {
+					board.playMove(4, user);
+					move4.setText(""+boardA[1][0]);
+					move4.setStyle("-fx-font-size: 120pt;");
+					if(game.checkPlay()) {
+						computerPlayer.setMove();
+						setCompPlay();
+					}
+				}
+				
+				else if(e.getSource() == five && board.isValid(5) && game.checkPlay()) {
+					board.playMove(5, user);
+					move5.setText(""+boardA[1][1]);
+					move5.setStyle("-fx-font-size: 120pt;");
+					if(game.checkPlay()) {
+						computerPlayer.setMove();
+						setCompPlay();
+					}
+				}
+				else if(e.getSource() == six && board.isValid(6) && game.checkPlay()) {
+					board.playMove(6, user);
+					move6.setText(""+boardA[1][2]);
+					move6.setStyle("-fx-font-size: 120pt;");
+					if(game.checkPlay()) {
+						computerPlayer.setMove();
+						setCompPlay();
+					}
+				}
+				else if(e.getSource() == seven && board.isValid(7) && game.checkPlay()) {
+					board.playMove(7, user);
+					move7.setText(""+boardA[2][0]);
+					move7.setStyle("-fx-font-size: 120pt;");
+					if(game.checkPlay()) {
+						computerPlayer.setMove();
+						setCompPlay();
+					}
+				}
+				else if(e.getSource() == eight && board.isValid(8) && game.checkPlay()) {
+					board.playMove(8, user);
+					move8.setText(""+boardA[2][1]);
+					move8.setStyle("-fx-font-size: 120pt;");
+					if(game.checkPlay()) {
+						computerPlayer.setMove();
+						setCompPlay();
+					}
+				}
+				else if(e.getSource() == nine && board.isValid(9) && game.checkPlay()) {
+					board.playMove(9, user);
+					move9.setText(""+boardA[2][2]);
+					move9.setStyle("-fx-font-size: 120pt;");
+					if(game.checkPlay()) {
+						computerPlayer.setMove();
+						setCompPlay();
+					}
+				}
+		//	} while(game.checkPlay());
 			
-			if(e.getSource()==one && board.isValid(1)) { //&& Game.checkPlay()
-				board.playMove(1, user);
-				move1.setText(""+boardA[0][0]);
-				boardPane.getChildren().add(move1);
-				computerPlayer.setMove();
-				setCompPlay();
+			if(game.checkWinX()) {
+				String name = userName.getText();
+		/*		if(name == "" || name == " ") {
+					winnings.setText("You Win!");
+				}
+				else
+		*/	
+				winnings.setText("You Win!");
+					
+			//	System.out.print("You Win!");
+			
+				StackPane pane = new StackPane();
+				pane.getChildren().addAll(closingPane, winnings);
+				root.setCenter(pane);
 			}
-			else if(e.getSource() == two && board.isValid(2)) {
-				board.playMove(2, user);
-				move2.setText(""+boardA[0][1]);
-				boardPane.getChildren().add(move2);
+			else if(game.checkWinO()) {
+				winnings.setText("The Computer Wins!\nBetter Luck next time!");
+			//	System.out.println("The Computer Wins! Better Luck next time!");
+				
+				StackPane pane = new StackPane();
+				pane.getChildren().addAll(closingPane, winnings);
+				root.setCenter(pane);
 			}
-			else if(e.getSource() == three && board.isValid(3)) {
-				board.playMove(3, user);
-				move3.setText(""+boardA[0][2]);
-				boardPane.getChildren().add(move3);
+			else if(game.checkDraw()) {
+				winnings.setText("It's a Draw!");
+			//	System.out.print("It's a Draw!");
+				
+				StackPane pane = new StackPane();
+				pane.getChildren().addAll(closingPane, winnings);
+				root.setCenter(pane);
 			}
+			
 			
 		}
 		catch (IllegalMoveException e1) {
 		//	instructions.setText(value);
-			// TODO Auto-generated catch block
 		//	e1.printStackTrace();
 		}
 
 	}
 //	/*	
   	private void setCompPlay() {
-  		move1.setText(""+boardA[0][2]);
-  		move2.setText(""+boardA[0][2]);
-  		move3.setText(""+boardA[0][2]);
-  		move4.setText(""+boardA[0][2]);
-  		move5.setText(""+boardA[0][2]);
-  		move6.setText(""+boardA[0][2]);
-  		move7.setText(""+boardA[0][2]);
-  		move8.setText(""+boardA[0][2]);
-  		move9.setText(""+boardA[0][2]);
-  		boardPane.getChildren().addAll(move1, move2, move3, move4, move5, move6, move7, move8, move9);
+  		for(int row = 0; row<3; row++) {
+			for(int column = 0; column<3;column++) {
+				if(boardA[row][column]!= "  ") { 
+					switch (row) {
+			        case 0:	switch(column) {
+						        case 0: 
+						        //	System.out.print(" 1 ");
+						        	move1.setText(""+boardA[0][0]);
+						        	move1.setStyle("-fx-font-size: 120pt;");
+						        	one.setOpacity(1);
+						        	break;
+						        case 1: 
+						        	move2.setText(""+boardA[0][1]);
+						        	move2.setStyle("-fx-font-size: 120pt;");
+						        	two.setOpacity(1);
+						        //	System.out.print(" 2 ");
+						        	break;
+						        case 2: 
+						        	move3.setText(""+boardA[0][2]);
+						        	move3.setStyle("-fx-font-size: 120pt;");
+						        	three.setOpacity(1);
+						        //	System.out.print(" 3 ");
+						        	break;
+			        		}
+			                break;
+			        case 1: switch(column) {
+						        case 0: 
+						        	move4.setText(""+boardA[1][0]);
+						        	move4.setStyle("-fx-font-size: 120pt;");
+						        	four.setOpacity(1);
+						        //	System.out.print(" 4 ");
+						        	break;
+						        case 1: 
+						        	move5.setText(""+boardA[1][1]);
+						        	move5.setStyle("-fx-font-size: 120pt;");
+						        	five.setOpacity(1);
+						        //	System.out.print(" 5 ");
+						        	break;
+						        case 2: 
+						        	move6.setText(""+boardA[1][2]);
+						        	move6.setStyle("-fx-font-size: 120pt;");
+						        	six.setOpacity(1);
+						        //	System.out.print(" 6 ");
+						        	break;
+			        		}
+			     			break;
+			        case 2: switch(column) {
+						        case 0: 
+						        	move7.setText(""+boardA[2][0]);
+						        	move7.setStyle("-fx-font-size: 120pt;");
+						        	seven.setOpacity(1);
+						        //	System.out.print(" 7 ");
+						        	break;
+						        case 1: 
+						        	move8.setText(""+boardA[2][1]);
+						        	move8.setStyle("-fx-font-size: 120pt;");
+						        	eight.setOpacity(1);
+						        //	System.out.print(" 8 ");
+						        	break;
+						        case 2: 
+						        	move9.setText(""+boardA[2][2]);
+						        	move9.setStyle("-fx-font-size: 120pt;");
+						        	nine.setOpacity(1);
+						        //	System.out.print(" 9 ");
+						        	break;
+			        		}
+			        		break;
+					}
+				}
+			}
+		}
+   	//	boardPane.getChildren().addAll(move1, move2, move3, move4, move5, move6, move7, move8, move9);
   	}
-//	*/
-	
+  	
+//	*/	
   	public void start(ActionEvent e) {
   		//	username ;
 		
 		//	board = new Board(user);
-			computerPlayer =  new ComputerPlayer(board);
-			game = new Game(computerPlayer);
+		//	computerPlayer =  new ComputerPlayer(board);
+		//	game = new Game(computerPlayer);
 			
 			boardPane.getChildren().addAll(one, two, three, four, five, six, seven, eight, nine);
-	  	//	boardPane.getChildren().addAll(move1, move2, move3, move4, move5, move6, move7, move8, move9);
+	  		boardPane.getChildren().addAll(move1, move2, move3, move4, move5, move6, move7, move8, move9);
 
 			root.setCenter(boardPane);
 			root.setBottom(sidePane);
@@ -314,8 +535,44 @@ public class GameGUI extends Application {
 			
 	}
 	public void newGame(ActionEvent e) {
+		root.setCenter(boardPane);
+		boardPane.requestLayout();
 		board = new Board(user);
 		computerPlayer =  new ComputerPlayer(board);
+		game = new Game(computerPlayer);
+		
+		move1.setText("");
+		move2.setText("");
+		move3.setText("");
+		move4.setText("");
+		move5.setText("");
+		move6.setText("");
+		move7.setText("");
+		move8.setText("");
+		move9.setText("");
+		
+		move1.setStyle("-fx-font-size: 0pt;");
+		move2.setStyle("-fx-font-size: 0pt;");
+		move3.setStyle("-fx-font-size: 0pt;");
+		move4.setStyle("-fx-font-size: 0pt;");
+		move5.setStyle("-fx-font-size: 0pt;");
+		move6.setStyle("-fx-font-size: 0pt;");
+		move7.setStyle("-fx-font-size: 0pt;");
+		move8.setStyle("-fx-font-size: 0pt;");
+		move9.setStyle("-fx-font-size: 0pt;");
+		
+		one.setOpacity(.5);
+		two.setOpacity(.5);
+		three.setOpacity(.5);
+		four.setOpacity(.5);
+		five.setOpacity(.5);
+		six.setOpacity(.5);
+		seven.setOpacity(.5);
+		eight.setOpacity(.5);
+		nine.setOpacity(.5);
+		
+		
+		isNewGame = true;
 	}
 	
 	public static void main(String[] args) {
